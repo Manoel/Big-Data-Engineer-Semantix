@@ -1,0 +1,1026 @@
+POST avaliacao/_doc
+{
+  "nome":"Elastic","nota":"10"
+}
+POST avaliacao/_doc
+{
+  "nome":"Logstash","nota":"8"
+}
+POST avaliacao/_doc
+{
+  "nome":"Kibana","nota":"5"
+}
+POST avaliacao/_doc
+{
+  "nome":"Beats","nota":"6"
+}
+
+GET avaliacao/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "nota": "5, 8"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "match": {
+            "nota": "10"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET avaliacao/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "nome": "Kibana"
+          }
+        },
+        {
+          "match": {
+            "nota": "5, 6"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET avaliacao/_search
+{
+  "query": {
+    "range": {
+      "nota": {
+        "gte": 6
+      }
+    }
+  }
+}
+
+GET avaliacao/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "term": {
+          "nome": "beats"
+        }
+      }
+    }
+  }
+}
+
+GET avaliacao/_search
+{
+  "query": {
+    "constant_score": {
+      "filter": {
+        "term": {
+          "nome": "beats"
+        }
+      }
+    }
+  }
+}
+ 
+POST _analyze
+{
+  "analyzer": "brazilian",
+  "text": "A prova de 2020 está facil"
+}
+ 
+# resposta #
+
+#
+{
+  "tokens" : [
+    {
+      "token" : "prov",
+      "start_offset" : 2,
+      "end_offset" : 7,
+      "type" : "<ALPHANUM>",
+      "position" : 1
+    },
+    {
+      "token" : "2020",
+      "start_offset" : 11,
+      "end_offset" : 15,
+      "type" : "<NUM>",
+      "position" : 3
+    },
+    {
+      "token" : "est",
+      "start_offset" : 16,
+      "end_offset" : 20,
+      "type" : "<ALPHANUM>",
+      "position" : 4
+    },
+    {
+      "token" : "facil",
+      "start_offset" : 21,
+      "end_offset" : 26,
+      "type" : "<ALPHANUM>",
+      "position" : 5
+    }
+  ]
+}
+
+#
+
+POST _analyze
+{
+  "analyzer": "simple",
+  "text": "A prova de 2020 está facil"
+}
+
+
+PUT avaliacao2
+PUT avaliacao2/_mapping
+{
+  "properties": {
+    "nome": {
+      "type": "text",
+      "fields": {
+        "texto": {
+          "type": "text",
+          "analizer": "simple"
+        },
+        "chave": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
+
+POST avaliacao2/_doc
+{
+  "nome": "Elastic","nota":"10"
+}
+GET avaliacao2/_search
+{
+  "query": {
+    "match": {
+      "nome.chave": "elastic"
+    }
+  }
+}
+
+GET avaliacao2/_searc
+{
+  "query": {
+    "match": {
+      "nome.texto": "elastic"
+    }
+  }
+}
+
+# retorno #
+
+#  
+{
+  "took" : 1005,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 0,
+      "relation" : "eq"
+    },
+    "max_score" : null,
+    "hits" : [ ]
+  }
+}
+#
+
+
+#-----------------------------------------#
+# ----------------------------------------#
+GET avaliacao/_settings
+GET avaliacao/_stats
+GET avaliacao/_search
+# Esta abaixo é a correta #
+GET avaliacao/_mapping
+
+
+POST avaliacao/_open
+{
+  
+}
+
+POST avaliacao/_close
+{
+  
+}
+
+# resultado #
+
+# {
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "indices" : {
+    "avaliacao" : {
+      "closed" : true
+    }
+  }
+} #
+
+
+POST avaliacao/_doc
+{
+  
+}
+
+# resultado #
+
+# {
+  "error" : {
+    "root_cause" : [
+      {
+        "type" : "index_closed_exception",
+        "reason" : "closed",
+        "index_uuid" : "xdtI7vhfSPabQDIy0dHP0A",
+        "index" : "avaliacao"
+      }
+    ],
+    "type" : "index_closed_exception",
+    "reason" : "closed",
+    "index_uuid" : "xdtI7vhfSPabQDIy0dHP0A",
+    "index" : "avaliacao"
+  },
+  "status" : 400
+}
+ # 
+
+POST avaliacao2/_doc/1
+{
+  
+}
+
+# primeira vez #
+# {
+  "_index" : "avaliacao2",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+} #
+
+# segunda vez #
+
+# {
+  "_index" : "avaliacao2",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 2,
+  "result" : "updated",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 1,
+  "_primary_term" : 1
+}  #
+
+# --------------------------------#
+PUT avaliacao/_doc/
+{
+  
+}
+
+# {
+  "error" : "Incorrect HTTP method for uri [/avaliacao/_doc/?pretty=true] and method [PUT], allowed: [POST]",
+  "status" : 405
+} #
+
+
+#----------------------------------------#
+PUT avaliacao1/_doc/1/_create
+{
+  
+}
+
+# Ecutado a primera vez {
+  "_index" : "avaliacao1",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}  
+
+A segunda Vez
+
+{
+  "error" : {
+    "root_cause" : [
+      {
+        "type" : "version_conflict_engine_exception",
+        "reason" : "[1]: version conflict, document already exists (current version [1])",
+        "index_uuid" : "gKuhJqm1SPGkslEPz_h1CA",
+        "shard" : "0",
+        "index" : "avaliacao1"
+      }
+    ],
+    "type" : "version_conflict_engine_exception",
+    "reason" : "[1]: version conflict, document already exists (current version [1])",
+    "index_uuid" : "gKuhJqm1SPGkslEPz_h1CA",
+    "shard" : "0",
+    "index" : "avaliacao1"
+  },
+  "status" : 409
+}
+
+
+#
+
+# -------------------------------------------#
+PUT avaliacao/_doc/1
+{
+  
+}
+# resultado
+{
+  "_index" : "avaliacao",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 2,
+  "result" : "updated",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 1,
+  "_primary_term" : 1
+}
+#
+
+# Pesquisando os documentos #
+GET manoel-2022.03.30/_search
+
+# Verificar a quantidade de documentos do índice criado pelo Logstash e visualizar seus 10 primeiros documentos #
+GET manoel-2022.03.30/_count
+
+# Verificando todos os indices
+GET _cat/indices?v
+
+# Pesquisando os documentos #
+GET heartbeat-7.9.2-2022.03.30-000001/_search
+
+# Verificar a quantidade de documentos do índice criado pelo Heartbeat e visualizar seus 10 primeiros documentos #
+
+GET heartbeat-7.9.2-2022.03.30-000001/_count
+
+# Pesquisando os documentos #
+GET metricbeat-7.9.2-2022.03.30-000001/_search
+
+# Verificar a quantidade de documentos do índice criado pelo Metricbeat e visualizar seus 10 primeiros documentos #
+GET metricbeat-7.9.2-2022.03.30-000001/_count
+
+# Pesquisando os documentos #
+GET filebeat-7.9.2-2022.03.30-000001/_search
+
+# Verificar a quantidade de documentos do índice criado pelo Filebeat e visualizar seus 10 primeiros documentos #
+GET filebeat-7.9.2-2022.03.30-000001/_count
+
+# Contar a quantidade de documentos de 2 anos atrás até hoje #
+GET bolsa/_search
+{
+  "size": 0
+  , "aggs": {
+    "qtd_2anosc": {
+      "date_range": {
+        "field": "@timestamp",
+        "ranges": [
+          {
+            "from": "now-2y",
+            "to": "now"
+          }
+        ]
+      }
+    }
+  }
+}
+
+# Contar a quantidade de documentos agrupados por ano
+GET bolsa/_search
+{
+  "size": 0, 
+  "aggs": {
+    "doc_anos": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "calendar_interval": "year"
+      }
+    }
+  }
+}
+
+# Calcular a mediana do campo open #
+GET bolsa/_search
+{
+  "size": 0,
+  "aggs": {
+    "mediana": {
+      "percentiles": {
+        "field": "open",
+        "percents": [
+          1,
+          5,
+          25,
+          50,
+          75,
+          95,
+          99
+        ]
+      }
+    }
+  }
+}
+
+# Calcular a estatística do campo open do período do dia 2019-04-01 até agora #
+
+GET bolsa/_search
+{
+  "query": {
+    "range": {
+      "@timestamp": {
+        "gte": "2019-04-01",
+        "lte": "now"
+      }
+    }
+  },
+  "aggs": {
+    "estatistica": {
+      "stats": {
+        "field": "open"
+      }
+    }
+  }
+}
+
+# Visualizar os documentos do dia 2019-04-01 até agora. (hits = 3) #
+GET bolsa/_search
+{
+  "query": {
+    "range": {
+      "@timestamp": {
+        "gte": "2019-04-01",
+        "lte": "now"
+      }
+    }
+  }
+}
+
+# Calcular a estatística do campo close #
+GET bolsa/_search
+{
+  "size": 0, 
+  "aggs": {
+    "estatistica": {
+      "stats": {
+        "field": "close"
+      }
+    }
+  }
+}
+
+# Calcular a média do campo volume #
+GET bolsa/_search
+{
+  "size": 0, 
+  "aggs": {
+    "media": {
+      "avg": {
+        "field": "volume"
+      }
+    }
+  }
+}
+
+# ----------------------------------------------#
+# Sempre que usar Analyser
+# testar
+# criar indice com o Analyser
+# reindexar
+
+GET produto/_settings
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao": "compativel"
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao.keyword": "compativel"
+    }
+  }
+}
+
+GET produto/_search
+
+POST _reindex
+{
+  "source": {
+    "index": "produto1"
+  },
+  "dest": {
+    "index": "produto"
+  }
+}
+
+PUT produto
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }, 
+  "mappings": {
+    "properties": {
+      "descricao": {
+        "type": "text",
+        "analyzer": "brazilian",
+        "fields": {
+          "original": {
+            "type" : "keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+DELETE produto
+
+GET produto1/_search
+
+PUT produto1
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }, 
+  "mappings": {
+    "properties": {
+      "descricao": {
+        "type": "text",
+        "analyzer": "brazilian",
+        "fields": {
+          "original": {
+            "type" : "keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET produto1/_mapping
+
+POST _reindex
+{
+  "source": {
+    "index": "produto"
+  },
+  "dest": {
+    "index": "produto1"
+  }
+}
+
+PUT produto1
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }, 
+  "mappings": {
+    "properties": {
+      "descricao": {
+        "type": "text",
+        "analyzer": "brazilian"
+      }
+    }
+  }
+}
+
+# Criar os Analyzer simple, standard, brazilian e portuguese #
+POST _analyzer
+{
+  "analyzer": "portuguese",
+  "text": "O elasticsearch surgiu em 2010"
+}
+
+# -------------------------------------------------------#
+GET bolsa/_search
+{
+  "query": {
+    "range": {
+      "timestamp": {
+        "gte": "2019-04-01",
+        "lte": "now",
+        "format": "yyyy-MM-dd"
+      }
+    }
+  }
+}
+
+GET bolsa/_search
+{
+  "query": {
+    "range": {
+      "timestamp": {
+        "gte": "2019-01-01",
+        "lte": "2019-03-01",
+        "format": "yyyy-MM-dd"
+      }
+    }
+  }
+}
+
+
+# Para ver todos os campos #
+GET bolsa/_mapping
+
+# (Este: "size": 20 é para ver todos)  #
+GET populacao/_search
+{
+  "size": 20,
+  "query": {
+    "range": {
+      "Zip Code": {
+        "gte": 90056,
+        "lte": 90067
+      }
+    }
+  }
+}
+
+GET populacao/_search
+{
+  "query": {
+    "range": {
+      "Median Age": {
+        "gt": 70
+      }
+    }
+  }
+}
+
+GET populacao/_search
+{
+  "query": {
+    "range": {
+      "Total Population": {
+        "lt": 100
+      }
+    }
+  }
+}
+
+HEAD populacao
+
+#------------------------------------------------------------#
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao": {
+        "query": "windows linux usb",
+        "minimum_should_match": "50%"
+      }
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao": {
+        "query": "windows linux usb",
+        "minimum_should_match": 2
+      }
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao": "windows linux usb"
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao": {
+        "query": "windows linux",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "nome": "memória"
+          }
+        },
+        {
+          "match": {
+            "descricao": "USB"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "match": {
+            "descricao": "linux"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "descricao": "USB"
+          }
+        }
+      ],
+      "must_not": [
+        {"match": {
+          "descricao": "linux"
+        }}
+      ]
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao": "USB"
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "constant_score": {
+      "filter": {
+        "terms": {
+          "nome": [
+            "mouse",
+            "teclado"
+          ]
+        }
+      }
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "constant_score": {
+      "filter": {
+        "term": {
+          "nome": "mouse"
+        }
+      }
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "terms": {
+      "nome": [
+        "mouse",
+        "teclado"
+      ]
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "term": {
+      "nome": {
+        "value": "mouse"
+      }
+    }
+  }
+}
+
+HEAD produto
+
+POST produto/_open
+
+GET produto/_search
+
+POST produto/_close
+
+GET produto2/_mapping
+
+GET produto2/_count
+
+GET produto2/_search
+
+POST _reindex
+{
+  "source": {
+    "index": "produto"
+  },
+  "dest": {
+    "index": "produto2"
+  }
+}
+
+GET produto2
+
+PUT produto2/_mapping
+{
+  "properties": {
+    "data": {
+      "type": "date"
+    },
+    "descricao": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "nome": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "qtd": {
+      "type": "short"
+    }
+  }
+}
+
+
+PUT produto2
+{
+  
+}
+
+PUT produto/_doc/6
+{
+  "nome": "teclado", 
+  "qtd": 100, 
+  "descricao": "USB", 
+  "data":"2020-09-18"
+}
+
+PUT produto/_mapping
+{
+  "properties":{
+    "data": {
+      "type":"date"
+    }
+  }
+}
+
+GET produto/_mapping/field/nome
+
+GET produto/_mapping
+
+GET produto/_settings
+
+GET _all/_search?&size=5&from=15
+
+GET produto/_search?q=nome:memória&q=descricao:DDR4
+
+GET produto/_search?q=nome:hd&q=descricao:windows
+
+GET produto/_search?q=descricao:usb
+
+GET produto/_search?q=qtd:30
+
+GET produto/_search?q=nome:mouse
+
+GET populacao/_search
+
+GET concessionaria2/_search
+
+GET populacao/_count
+
+GET concessionaria2/_count
+
+GET produto/_count
+
+GET produto/_doc/4
+
+DELETE produto/_doc/4
+
+GET produto/_doc/1
+
+POST produto/_update/3
+{
+  "doc": {
+    "qtd": 30
+  }
+}
+
+HEAD produto/_doc/3
+
+POST produto/_doc/4
+{
+  "nome": "cpu", 
+  "qtd": 15, 
+  "descricao": "i5, 2.5Ghz"
+}
+POST produto/_doc/3
+{
+  "nome": "memória ram", 
+  "qtd": 10, 
+  "descricao": "8GB, DDR4"
+}
+POST produto/_doc/2
+{
+  "nome": "hd", 
+  "qtd": 20, 
+  "descricao": "Interface USB 2.0, 500GB, Sistema: Windows 10, Windows 8, Windows 7" 
+}
+POST produto/_doc/1
+{
+  "nome": "mouse", 
+  "qtd": 50, 
+  "descricao": "com fio USB, compatível com Windows, Mac e Linux"
+}
