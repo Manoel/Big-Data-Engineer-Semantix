@@ -1,0 +1,9 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(package, None, None)[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / package[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /home/IdeaProjects/primeiro_projeto_scala/target/scala-2.11/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mNon-compiled module 'compiler-bridge_2.11' for Scala 2.11.12. Compiling...[0m
+[0m[[0m[0minfo[0m] [0m[0m  Compilation completed in 10.336s.[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 14 s, completed 18/04/2022 21:24:03[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(idea-shell, None, None)[0m
