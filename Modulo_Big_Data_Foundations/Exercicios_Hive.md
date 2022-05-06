@@ -12,20 +12,20 @@ Subir o cluster
 1.  Enviar o arquivo local “/input/exercises-data/populacaoLA/populacaoLA.csv” para o diretório no HDFS “/user/aluno/<nome>/data/populacao”
 
 ```bash
-	docker-bigdata# docker exec -it namenode bash<br>
-	ls /input/exercises-data/populacaoLA/<br>
-	hdfs dfs -mkdir /user/aluno/manoel/data/populacao<br>
-	ls<br>
-	hdfs dfs -put /input/exercises-data/populacaoLA/populacaoLA.csv /user/aluno/manoel/data/populacao<br>
-	hdfs dfs -ls /user/aluno/manoel/data/populacao<br>
-	hdfs dfs -cat /user/aluno/manoel/data/populacao/populacaoLA.csv | head -n 3<br>
+	docker-bigdata# docker exec -it namenode bash
+	ls /input/exercises-data/populacaoLA/
+	hdfs dfs -mkdir /user/aluno/manoel/data/populacao
+	ls
+	hdfs dfs -put /input/exercises-data/populacaoLA/populacaoLA.csv /user/aluno/manoel/data/populacao
+	hdfs dfs -ls /user/aluno/manoel/data/populacao
+	hdfs dfs -cat /user/aluno/manoel/data/populacao/populacaoLA.csv | head -n 3
 	"Ctrl + D" para sair do namenode
 ```
 2. Listar os bancos de dados no Hive<br>
 
 ```bash
-	docker exec -it hive-server bash<br>
-	beeline -u jdbc:hive2://localhost:10000<br>
+	docker exec -it hive-server bash
+	beeline -u jdbc:hive2://localhost:10000
 	show databases;
 ```
 
@@ -38,23 +38,23 @@ Subir o cluster
 4. Criar a Tabela Hive no BD <nome><br>
 
 ```bash
-	use manoel;<br>
+	use manoel;
 
 	create table pop(zip_code int,total_population int,median_age float,total_males int,total_females int,total_households int,average_household_size float)
-	row format delimited<br>
-	fields terminated by ','<br>
-	lines terminated by '\n'<br>
-	stored as textfile<br>
-	tblproperties("skip.header.line.count"="1");<br>
+	row format delimited
+	fields terminated by ','
+	lines terminated by '\n'
+	stored as textfile
+	tblproperties("skip.header.line.count"="1");
 ```
 
 5. Visualizar a descrição da tabela pop<br>
 
 ```bash
-	desc formatted  pop;<br>
-	Ctrl + D para sair do beeline<br>
-	Ctrl + D para sair do hive_server<br>
-	docker-bigdata# docker-compose stop (para fechar o cluster).<br>
+	desc formatted  pop;
+	Ctrl + D para sair do beeline
+	Ctrl + D para sair do hive_server
+	docker-bigdata# docker-compose stop (para fechar o cluster).
 ```
 ---
 
@@ -63,17 +63,17 @@ Subir o cluster
 1. Visualizar a descrição da tabela pop do banco de dados <nome><br>
 
 ```bash
-	docker exec -it hive-server bash<br>
-	beeline -u jdbc:hive2://localhost:10000<br>
-	show databases;<br>
-	use manoel;<br>
-	show tables;<br>
-	desc formatted pop;<br>
+	docker exec -it hive-server bash
+	beeline -u jdbc:hive2://localhost:10000
+	show databases;
+	use manoel;
+	show tables;
+	desc formatted pop;
 ```
 
 2. Selecionar os 10 primeiros registros da tabela pop<br>
 ```sql
-	select * from pop limit 10;<br>
+	select * from pop limit 10;
 ```
 
 3. Carregar o arquivo d o HDFS “/user/aluno/<nome>/data/população populacaoLA.csv ” para a tabela Hive pop
@@ -115,11 +115,11 @@ Subir o cluster
 
 1. Criar a pasta “/user/aluno/<nome>/data/nascimento” no HDFS<br>
 ```bash
-	docker exec -it namenode bash<br>
+	docker exec -it namenode bash
 
-	Verificando se a pata existe<br>
+	Verificando se a pata existe
 		hdfs dfs -ls /user/aluno/manoel/data
-	Criando a pasta<br>
+	Criando a pasta
 		hdfs dfs -ls /user/aluno/manoel/data
 ```
 
@@ -210,7 +210,7 @@ Enviando o arquivo yob2015.txt para o diretório: /user/aluno/<nome>/data/nascim
 	0: jdbc:hive2://localhost:10000> select * from nascimento limit 10;
 ```
 7. Repita o processo do 4 ao 6 para os anos de 2016 e 2017.
-```bash
+```sql
 	use manoel;
 	alter table nascimento add partition(ano=2016);
 	alter table nascimento add partition(ano=2017);
